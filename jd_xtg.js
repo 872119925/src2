@@ -5,7 +5,7 @@
  * @Last Modified time: 2020-11-05 00:35:04
  */
 /**
- 星推官脚本 https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js
+ 星推官脚本 https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_xtg.js
  星推官活动地址：https://prodev.m.jd.com/mall/active/3gSzKSnvrrhYushciUpzHcDnkYE3/index.html
  活动时间：2020年10月21日 00:00:00-2020年11月12日 23:59:59
  京豆先到先得！！！！！！！！！！！
@@ -17,15 +17,15 @@
  // quantumultx
  [task_local]
  #京东星推官
- 2 0 * * * https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js, tag=京东星推官, enabled=true
+ 2 0 * * * https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_xtg.js, tag=京东星推官, enabled=true
  // Loon
  [Script]
- cron "2 0 * * *" script-path=https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js,tag=京东星推官
+ cron "2 0 * * *" script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_xtg.js,tag=京东星推官
  // Surge
- 京东星推官 = type=cron,cronexp=2 0 * * *,wake-system=1,timeout=320,script-path=https://raw.githubusercontent.com/lxk0301/scripts/master/jd_xtg.js
+ 京东星推官 = type=cron,cronexp=2 0 * * *,wake-system=1,timeout=320,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_xtg.js
  */
 const $ = new Env('京东星推官');
-const activeEndTime = '2020/11/12 23:59:59';//活动结束时间
+const activeEndTime = '2020/11/12 23:59:59+08:00';//活动结束时间
 const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
@@ -70,7 +70,27 @@ const starID = [
   "oulebzhangyixing",
 ];
 const shareID = [
-
+  'e646c144-28a7-4b1b-8145-5b0dbff107ec',
+  'b3fcb734-cbdd-4436-9f92-b13b445fc253',
+  'e2d63b19-19d6-4a20-b2af-74b828e703d0',
+  'a7a3b9b7-2872-4244-a627-3b82c271dee7',
+  'f7b521e7-5306-4908-ba8a-df2d221bdd9d',
+  'd17ec374-70d4-49d5-8673-7093e61f904c',
+  '915b9567-dc88-4389-8be9-ecc25588353a',
+  '7abdc8f4-d8f4-497f-8daa-cdab01cf645c',
+  '50ecc8de-1ee5-4420-bbb8-1136d86d80db',
+  'fd0770e1-5007-45c1-8d69-402e02ff9a52',
+  'cb9e9a59-a86b-4a0d-a308-4503fe5baaa4',
+  '93b3afeb-a18c-437c-b5ca-fbd9f389671d',
+  '8778793c-e9ad-4339-a709-723ae3ebde8e',
+  '921c376e-8cc5-4236-8242-ff8bb1b88a95',
+  '8b3ce203-4b10-4c36-a87d-da8c82efe362',
+  'c8e1feb3-6ab1-4410-8444-1de8bd22e041',
+  "dd6b5270-3e5e-436d-be0f-295a8604cf47",
+  "7aef5700-4fa0-43b8-98fa-3a09f46ea47c",
+  "be0ec81c-bf26-4b7b-9527-d02b0286e5af",
+  "ecd890e0-db46-46c7-862e-cb9776c207dc",
+  "91ceb3eb-df84-471e-ad77-320cd95763ee",
 ];
 const JD_API_HOST = 'https://urvsaggpt.m.jd.com/guardianstar';
 !(async () => {
@@ -91,8 +111,12 @@ const JD_API_HOST = 'https://urvsaggpt.m.jd.com/guardianstar';
       console.log(`\n===============开始【京东账号${$.index}】${$.nickName || $.UserName}==================\n`);
       if (!$.isLogin) {
         $.msg($.name, `【提示】cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取\nhttps://bean.m.jd.com/`, {"open-url": "https://bean.m.jd.com/"});
-        $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
-        if ($.isNode()) await notify.sendNotify(`${$.name}cookie已失效`, `京东账号${$.index} ${$.nickName || $.UserName}\n请重新登录获取cookie`);
+
+        if ($.isNode()) {
+          await notify.sendNotify(`${$.name}cookie已失效 - ${$.UserName}`, `京东账号${$.index} ${$.UserName}\n请重新登录获取cookie`);
+        } else {
+          $.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。$.setdata('', `CookieJD${i ? i + 1 : "" }`);//cookie失效，故清空cookie。
+        }
         continue
       }
       console.log(`一共${starID.length}个${$.name}任务，耗时会很久，请提前知晓`)
@@ -127,17 +151,13 @@ async function showMsg() {
   console.log(`\n做任务之前京豆总计:${$.beanCount}`)
   console.log(`做完任务后京豆总计:${$.jdNum}`);
   console.log(`活动活动京豆数量:${$.jdNum - $.beanCount}`);
-  let nowTime = Date.now();
-  const zone = new Date().getTimezoneOffset();
-  if (zone === 0) {
-    nowTime += 28800000;//UTC-0时区加上8个小时
-  }
+  let nowTime = new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000;
   if (nowTime > new Date(activeEndTime).getTime()) {
-    $.msg($.name, '活动已结束', `请删除或禁用此脚本\n如果帮助到您可以点下🌟STAR鼓励我一下,谢谢\n咱江湖再见\nhttps://github.com/lxk0301/scripts`, {"open-url": "https://github.com/lxk0301/scripts"});
-    if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n如果帮助到您可以点下🌟STAR鼓励我一下,谢谢\n咱江湖再见\nhttps://github.com/lxk0301/scripts`)
+    $.msg($.name, '活动已结束', `请删除或禁用此脚本\n如果帮助到您可以点下🌟STAR鼓励我一下,谢谢\n咱江湖再见\nhttps://github.com/lxk0301/jd_scripts`, {"open-url": "https://github.com/lxk0301/jd_scripts"});
+    if ($.isNode()) await notify.sendNotify($.name + '活动已结束', `请删除此脚本\n如果帮助到您可以点下🌟STAR鼓励我一下,谢谢\n咱江湖再见\nhttps://github.com/lxk0301/jd_scripts`)
   } else {
     $.msg($.name, `账号${$.index} ${$.nickName || $.UserName}`, `做任务之前京豆总计:${$.beanCount}\n做完任务后京豆总计:${$.jdNum}\n${($.jdNum - $.beanCount) > 0 ? `获得京豆：${$.jdNum - $.beanCount}京豆 🐶(仅供参考)\n` : ''}京豆先到先得\n活动地址点击弹窗跳转后即可查看\n注：如未获得京豆就是已被分完`, {"open-url": "https://prodev.m.jd.com/mall/active/3gSzKSnvrrhYushciUpzHcDnkYE3/index.html"})
-    if ($.isNode()) await notify.sendNotify(`${$.name}`, `账号${$.index} ${$.nickName || $.UserName}\n做任务之前京豆总计:${$.beanCount}\n做完任务后京豆总计:${$.jdNum}\n${($.jdNum - $.beanCount) > 0 ? `获得京豆：${$.jdNum - $.beanCount}京豆 🐶(仅供参考)\n` : ''}京豆先到先得\n注：如未获得京豆就是已被分完\n活动地址：https://prodev.m.jd.com/mall/active/3gSzKSnvrrhYushciUpzHcDnkYE3/index.html`)
+    if ($.isNode()) await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName || $.UserName}`, `账号${$.index} ${$.nickName || $.UserName}\n做任务之前京豆总计:${$.beanCount}\n做完任务后京豆总计:${$.jdNum}\n${($.jdNum - $.beanCount) > 0 ? `获得京豆：${$.jdNum - $.beanCount}京豆 🐶(仅供参考)\n` : ''}京豆先到先得\n注：如未获得京豆就是已被分完\n活动结束时间：2020年11月12日 23:59:59\n活动地址：https://prodev.m.jd.com/mall/active/3gSzKSnvrrhYushciUpzHcDnkYE3/index.html`)
   }
 }
 async function JD_XTG() {

@@ -82,7 +82,7 @@ exports.main_handler = async (event, context, callback) => {
 let CookieJDs = [
   'pt_key=xxx;pt_pin=xxx;', 
   'pt_key=zzz;pt_pin=zzz;',
-  'pt_key=aaa;pt_pin=xxxaaa
+  'pt_key=aaa;pt_pin=xxxaaa'
 ]
 ```
 
@@ -92,21 +92,30 @@ let CookieJDs = [
 
 [腾讯云函数地址]( https://console.cloud.tencent.com/scf/index )
 
+编写函数
+
 登录后，点击管理控制台
 
-![Bc1c5T.png](https://s1.ax1x.com/2020/11/04/Bc1c5T.png)
+单击左侧导航栏**函数服务**，进入“函数服务”页面。
+在页面上方选择一个地域，最好选择离你常用地区近点的，不至于导致账号异常。单击**新建**。如下图所示：
 
-点击 函数服务->新建
+![iCloud1](./icon/iCloud1.png)
 
-![Bc1TVx.png](https://s1.ax1x.com/2020/11/04/Bc1TVx.png)
+在“新建函数”页面填写函数基础信息，单击**下一步**。如下图所示：
 
-下一步
+![iCloud2](./icon/iCloud2.png)
 
-![Bc1xsA.png](https://s1.ax1x.com/2020/11/04/Bc1xsA.png)
+函数名称：可以自定义，比如为jd。
+运行环境：选择 “Nodejs 12.16”。
+创建方式：选择 “空白函数”。
 
-把整个项目文件夹都上传上去，点完成
+确保环境为Nodejs 12.16，执行方法改为：index.main_handler，提交方式建议选本地文件夹，然后从GitHub项目克隆Zip压缩包，解压成文件夹，然后点击这个上传把文件夹上传进来（记得node_modules文件夹一并上传），完了后点击下面的高级设置。
 
+![iCloud3](./icon/iCloud3.png)
 
+内存用不了太大，64MB就够了（64M内存，免费时长6,400,000秒，内存与免费时长大致关系可以参看云函数官方说明），超时时间改为最大的900秒，然后点击最下面的完成。
+
+![iCloud4](./icon/iCloud4.png)
 
 ## 5.设置触发器
 
@@ -120,9 +129,11 @@ let CookieJDs = [
 
 ![UTOOLS1604471299130.png](https://img01.sogoucdn.com/app/a/100520146/f8d70ea4f8e08d9e87ec8c13474f22c3)
 
+想进阶使用触发器的自行查看本文中方案一和方案二中的说明
+
 关于触发周期中的自定义触发周期，使用的是 Cron表达式，这个自行学习下吧
 
-[Corn文档](https://cloud.tencent.com/document/product/583/9708#cron-.E8.A1.A8.E8.BE.BE.E5.BC.8F  )
+[Corn文档](https://cloud.tencent.com/document/product/583/9708#cron-.E8.A1.A8.E8.BE.BE.E5.BC.8F)
 
 
 
