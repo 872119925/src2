@@ -6,7 +6,7 @@ name: jd_plantBean
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */1 * * *' #此处为UTC-0时间
+    - cron: '0 23,0-14/1 * * *' #此处为UTC-0时间
   watch:
     types: started
   repository_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: danwangshimoluo/JdScripts
+          repository: bigcandou/jd_scripts
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:

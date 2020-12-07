@@ -6,11 +6,11 @@ name: jd_small_home
 on:
   workflow_dispatch:
   schedule:
-    - cron: '12,18 * * * *'
+    - cron: '0 16 * * *'
   watch:
     types: started
   repository_dispatch:
-    types: small_home
+    types: jd_small_home
 jobs:
   build:
 
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: danwangshimoluo/JdScripts
+          repository: bigcandou/jd_scripts
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
