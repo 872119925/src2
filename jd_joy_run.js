@@ -39,9 +39,9 @@ const $ = new Env('宠汪汪赛跑');
 const JD_BASE_API = `https://draw.jdfcloud.com//pet`;
 //此处填入你需要助力好友的京东用户名
 //下面给出好友邀请助力的示例填写规则
-let invite_pins = ["jd_6cd93e613b0e5,被折叠的记忆33,jd_704a2e5e28a66,jd_45a6b5953b15b,zooooo58,jd_66f5cecc1efcd"];
+let invite_pins = ["jd_735680cedaa5e,鲨鱼棋,jd_717cd34f51296,jd_5a1329af66692,13750031424_p"];
 //下面给出好友赛跑助力的示例填写规则
-let run_pins = ["jd_6cd93e613b0e5,被折叠的记忆33,jd_704a2e5e28a66,jd_45a6b5953b15b,zooooo58,jd_66f5cecc1efcd"];
+let run_pins = ["jd_735680cedaa5e,鲨鱼棋,jd_717cd34f51296,jd_5a1329af66692,13750031424_p"];
 // $.LKYLToken = '76fe7794c475c18711e3b47185f114b5' || $.getdata('jdJoyRunToken');
 // $.LKYLToken = $.getdata('jdJoyRunToken');
 //Node.js用户请在jdCookie.js处填写京东ck;
@@ -73,7 +73,9 @@ if ($.isNode()) {
   let cookiesData = $.getdata('CookiesJD') || "[]";
   cookiesData = jsonParse(cookiesData);
   cookiesArr = cookiesData.map(item => item.cookie);
-  cookiesArr.push(...[$.getdata('CookieJD'), $.getdata('CookieJD2')]);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
   if ($.getdata('jd_joy_invite_pin')) {
     invite_pins = [];
     invite_pins.push($.getdata('jd_joy_invite_pin'));

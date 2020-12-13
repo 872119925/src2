@@ -29,15 +29,19 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
 let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '0a74407df5df4fa99672a037eec61f7e@dbb21614667246fabcfd9685b6f448f3@6fbd26cc27ac44d6a7fed34092453f77@61ff5c624949454aa88561f2cd721bf6',
+  '592ab793f1ed423eba38a71c8a70e27b@8da42306e5034e54869fe082610e5c96@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  'b1638a774d054a05a30a17d3b4d364b8@f92cb56c6a1349f5a35f0372aa041ea0@9c52670d52ad4e1a812f894563c746ea@8175509d82504e96828afc8b1bbb9cb3',
+  '0af863521d704b2e9360e0480b119e19@8da42306e5034e54869fe082610e5c96@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
+  //账号三的好友shareCode,不同好友的shareCode中间用@符号隔开
+  '0af863521d704b2e9360e0480b119e19@592ab793f1ed423eba38a71c8a70e27b@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
+  //账号四的好友shareCode,不同好友的shareCode中间用@符号隔开
+  '0af863521d704b2e9360e0480b119e19@592ab793f1ed423eba38a71c8a70e27b@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',	
 ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = 100;//保留水滴大于多少g,默认100g;
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 let jdFruitBeanCard = false;//农场使用水滴换豆卡(如果出现限时活动时100g水换20豆,此时比浇水划算,推荐换豆),true表示换豆(不浇水),false表示不换豆(继续浇水),脚本默认是浇水
-let randomCount = $.isNode() ? 20 : 5;
+let randomCount = $.isNode() ? 20 : 5; // let randomCount = 0; 设置从别接口获取互助码个数
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html%22%20%7D`;
 !(async () => {
@@ -1240,8 +1244,8 @@ function readShareCode() {
         resolve(data);
       }
     })
-    await $.wait(10000);
-    resolve()
+       await $.wait(10000);
+       resolve()
   })
 }
 function shareCodesFormat() {

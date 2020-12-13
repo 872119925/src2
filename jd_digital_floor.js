@@ -1,5 +1,6 @@
 /*
 数码加购京豆
+脚本会给内置的码进行助力
 共计25京豆，一天运行一次即可
 活动时间：2020-12-4 到 2020-12-11
 活动入口：https://prodev.m.jd.com/mall/active/nKxVyPnuLwAsQSTfidZ9z4RKVZy/index.html#/
@@ -27,8 +28,12 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-const randomCount = $.isNode() ? 20 : 5;
-const inviteCodes = [`40cd108f-9eed-4897-b795-45a5b221cd6b@49efb480-d6d7-456b-a4e0-14b170b161e0@`,'9d4262a5-1a02-4ae7-8a86-8d070d531464@687b14e0-ce0a-45eb-bf46-71aa0da05f18'];
+const randomCount = 0;//const randomCount = $.isNode() ? 20 : 5;
+const inviteCodes = ['0ff78b46-252d-4184-b89b-c5a5effae480@5a06c053-a12f-4af8-b14b-c02f23f9b449@c55c4c24-4cb8-4806-98e7-e94e6c5cd3a3@18d8f465-f470-4d3b-af96-3e2a57ee3e21',
+                    '0ff78b46-252d-4184-b89b-c5a5effae480@5a06c053-a12f-4af8-b14b-c02f23f9b449@c55c4c24-4cb8-4806-98e7-e94e6c5cd3a3@18d8f465-f470-4d3b-af96-3e2a57ee3e21',
+                    '0ff78b46-252d-4184-b89b-c5a5effae480@5a06c053-a12f-4af8-b14b-c02f23f9b449@c55c4c24-4cb8-4806-98e7-e94e6c5cd3a3@18d8f465-f470-4d3b-af96-3e2a57ee3e21',
+                    '0ff78b46-252d-4184-b89b-c5a5effae480@5a06c053-a12f-4af8-b14b-c02f23f9b449@c55c4c24-4cb8-4806-98e7-e94e6c5cd3a3@18d8f465-f470-4d3b-af96-3e2a57ee3e21'
+                    ];
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 if ($.isNode()) {
@@ -37,7 +42,12 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-  cookiesArr.push(...[$.getdata('CookieJD'), $.getdata('CookieJD2')]);
+  let cookiesData = $.getdata('CookiesJD') || "[]";
+  cookiesData = jsonParse(cookiesData);
+  cookiesArr = cookiesData.map(item => item.cookie);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
 }
 const JD_API_HOST = 'https://digital-floor.m.jd.com/adf/index/';
 !(async () => {
@@ -280,7 +290,8 @@ function shareCodesFormat() {
   })
 }
 function requireConfig() {
-  return new Promise(resolve => {
+  return new Promise(async resolve => {
+    await getAuthorShareCode()
     console.log(`开始获取${$.name}配置文件\n`);
     //Node.js用户请在jdCookie.js处填写京东ck;
     const shareCodes = [] //$.isNode() ? require('./jdSplitShareCodes.js') : '';
@@ -295,6 +306,22 @@ function requireConfig() {
     }
     console.log(`您提供了${$.shareCodesArr.length}个账号的${$.name}助力码\n`);
     resolve()
+  })
+}
+function getAuthorShareCode() {
+  return new Promise(resolve => {
+    $.get({url: "https://cdn.jsdelivr.net/gh/shylocks/updateTeam@main/jd_digital_floor"}, async (err, resp, data) => {
+      try {
+        if (err) {
+        } else {
+          inviteCodes[0] = data.replace('\n', '')
+        }
+      } catch (e) {
+        $.logErr(e, resp)
+      } finally {
+        resolve();
+      }
+    })
   })
 }
 function taskPostUrl(function_id, body) {
@@ -387,6 +414,17 @@ function safeGet(data) {
     console.log(e);
     console.log(`京东服务器访问数据为空，请检查自身设备网络情况`);
     return false;
+  }
+}
+function jsonParse(str) {
+  if (typeof str == "string") {
+    try {
+      return JSON.parse(str);
+    } catch (e) {
+      console.log(e);
+      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      return [];
+    }
   }
 }
 // prettier-ignore
