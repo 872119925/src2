@@ -8,7 +8,7 @@ on:
   schedule:
     - cron: '10 0 * * *'
   watch:
-    types: started
+    types: [started]
   repository_dispatch:
     types: kd
 jobs:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: bigcandou/jd_scripts
+          repository: kinsonyan/jd_scripts_backup
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -35,7 +35,7 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【京东快递】'
+      - name: '运行 【京东快递签到】'
         run: |
           node jd_kd.js
         env:
@@ -43,13 +43,10 @@ jobs:
           JD_DEBUG: ${{ secrets.JD_DEBUG }}
           PUSH_KEY: ${{ secrets.PUSH_KEY }}
           BARK_PUSH: ${{ secrets.BARK_PUSH }}
+          JD_USER_AGENT: ${{ secrets.JD_USER_AGENT }}
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_USER_ID: ${{ secrets.TG_USER_ID }}
           BARK_SOUND: ${{ secrets.BARK_SOUND }}
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
-          jdSuperMarketUpgrade: ${{ secrets.SUPERMARKET_UPGRADE }}
-          jdBusinessCircleJump: ${{ secrets.BUSINESS_CIRCLE_JUMP }}
-          SUPERMARKET_SHARECODES: ${{ secrets.SUPERMARKET_SHARECODES }}
-          jdSuperMarketLottery: ${{ secrets.SUPERMARKET_LOTTERY }}
