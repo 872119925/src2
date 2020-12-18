@@ -109,7 +109,7 @@ async function jdFactory() {
 function showMsg() {
   return new Promise(resolve => {
     if (!jdNotify) {
-      $.msg($.name, '', `${message}`);
+      //$.msg($.name, '', `${message}`);
     } else {
       $.log(`京东账号${$.index}${$.nickName}\n${message}`);
     }
