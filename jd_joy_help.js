@@ -31,7 +31,7 @@ http-request ^https:\/\/draw\.jdfcloud\.com(\/mirror)?\/\/pet\/enterRoom\/h5\?re
 https://jdjoy.jd.com/pet/getFriends?itemsPerPage=20&currentPage=1
 **/
 let url = $request.url
-const friendsArr = ["jd_735680cedaa5e", "jd_717cd34f51296", "jd_5a1329af66692", "鲨鱼棋"]
+const friendsArr = ["danwangshimoluo","830791320_12522466","jd_NWYnCfHMIqUI","jd_53edce0d99c30","wslxhui","jd_6169ef6a14e73","jd_66678de45d93d"]
 //随机生成m(小)到n(大)的数，包含m和n
 function randomFriendPin(m,n) {
   return Math.round(Math.random()*(n - m) + m);

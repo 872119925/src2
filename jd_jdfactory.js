@@ -34,7 +34,7 @@ const notify = $.isNode() ? require('./sendNotify') : '';
 //Node.js用户请在jdCookie.js处填写京东ck;
 const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 let jdNotify = true;//是否关闭通知，false打开通知推送，true关闭通知推送
-const randomCount = 0;//const randomCount = $.isNode() ? 20 : 5;
+const randomCount = $.isNode() ? 0 : 0;
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 if ($.isNode()) {
@@ -52,11 +52,7 @@ if ($.isNode()) {
 }
 let wantProduct = ``;//心仪商品名称
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
-const inviteCodes = ['P04z54XCjVWnYaS5m9cZ2f72HpClcoO4EzIZoY@P04z54XCjVWnYaS5m9cZ2f52i8elkggBtXHCYI@P04z54XCjVWnYaS5m9cZ2Wp3H9InDbehWaC7HQ@P04z54XCjVWnYaS5jQLD2X43X9LkbWcFMo', 
-                     'P04z54XCjVWnYaS5uyKkLl5UarZLg@P04z54XCjVWnYaS5m9cZ2f52i8elkggBtXHCYI@P04z54XCjVWnYaS5m9cZ2Wp3H9InDbehWaC7HQ@P04z54XCjVWnYaS5jQLD2X43X9LkbWcFMo',
-                    'P04z54XCjVWnYaS5uyKkLl5UarZLg@P04z54XCjVWnYaS5m9cZ2f72HpClcoO4EzIZoY@P04z54XCjVWnYaS5m9cZ2Wp3H9InDbehWaC7HQ@P04z54XCjVWnYaS5jQLD2X43X9LkbWcFMo',
-                     'P04z54XCjVWnYaS5uyKkLl5UarZLg@P04z54XCjVWnYaS5m9cZ2f72HpClcoO4EzIZoY@P04z54XCjVWnYaS5m9cZ2f52i8elkggBtXHCYI@P04z54XCjVWnYaS5jQLD2X43X9LkbWcFMo'                   
-                    ];
+const inviteCodes = [`P04z54XCjVWnYaS5j0LCGfx3H9IlacPVJ8K8GBQrK8`,`P04z54XCjVWnYaS5m9cZyKtqwM3_21lRoRuqQ`,`P04z54XCjVWnYaS5m9cZ2Wt2CpOlQ1y39qwmTs`];
 !(async () => {
   await requireConfig();
   if (!cookiesArr[0]) {
@@ -109,7 +105,7 @@ async function jdFactory() {
 function showMsg() {
   return new Promise(resolve => {
     if (!jdNotify) {
-      //$.msg($.name, '', `${message}`);
+      $.msg($.name, '', `${message}`);
     } else {
       $.log(`京东账号${$.index}${$.nickName}\n${message}`);
     }
@@ -225,8 +221,11 @@ async function algorithm() {
                   message += `兑换所需电量：${$.canMakeList[0].fullScore}\n`;
                   message += `您当前总电量：${$.batteryValue * 1}\n`;
                   if ($.canMakeList[0].couponCount > 0 && $.batteryValue * 1 >= $.canMakeList[0].fullScore) {
-                    $.msg($.name, '', `京东账号${$.index}${$.nickName}\n${message}【满足】兑换${$.canMakeList[0].name}所需总电量：${$.canMakeList[0].fullScore}\n请点击弹窗直达活动页面\n选择此心仪商品并手动投入电量兑换`, {'open-url': 'openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/2uSsV2wHEkySvompfjB43nuKkcHp/index.html%22%20%7D'});
-                    if ($.isNode()) await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName}\n${message}【满足】兑换${$.canMakeList[0].name}所需总电量：${$.canMakeList[0].fullScore}\n请速去活动页面查看`);
+                    let nowTimes = new Date(new Date().getTime() + new Date().getTimezoneOffset()*60*1000 + 8*60*60*1000);
+                    if (new Date(nowTimes).getHours() === 12) {
+                      $.msg($.name, '', `京东账号${$.index}${$.nickName}\n${message}【满足】兑换${$.canMakeList[0].name}所需总电量：${$.canMakeList[0].fullScore}\n请点击弹窗直达活动页面\n选择此心仪商品并手动投入电量兑换`, {'open-url': 'openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/2uSsV2wHEkySvompfjB43nuKkcHp/index.html%22%20%7D'});
+                      if ($.isNode()) await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.nickName}\n${message}【满足】兑换${$.canMakeList[0].name}所需总电量：${$.canMakeList[0].fullScore}\n请速去活动页面查看`);
+                    }
                   } else {
                     console.log(`\n目前电量${$.batteryValue * 1},不满足兑换 ${$.canMakeList[0].name}所需的 ${$.canMakeList[0].fullScore}电量\n`)
                   }
@@ -750,7 +749,7 @@ function jsonParse(str) {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
       return [];
     }
   }

@@ -11,6 +11,7 @@ hostname = jdjoy.jd.com,draw.jdfcloud.com
 surge
 [Script]
 聚宝盆投狗粮辅助 = type=http-response,pattern=^https:\/\/jdjoy\.jd\.com\/pet\/getPetTreasureBox|^https:\/\/draw\.jdfcloud\.com\/\/pet\/getPetTreasureBox,requires-body=1,max-size=0,script-path=https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_petTreasureBox.js
+
 Qx
 [rewrite_local]
 ^https:\/\/jdjoy\.jd\.com\/pet\/getPetTreasureBox|^https:\/\/draw\.jdfcloud\.com\/\/pet\/getPetTreasureBox url script-response-body https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_petTreasureBox.js

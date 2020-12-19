@@ -1,6 +1,6 @@
 /*
 东东水果:脚本更新地址 https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_fruit.js
-更新时间：2020-11-30
+更新时间：2020-12-15
 东东农场活动链接：https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html
 已支持IOS双京东账号,Node.js支持N个京东账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
@@ -27,21 +27,18 @@ let cookiesArr = [], cookie = '', jdFruitShareArr = [], isBox = false, notify, n
 //助力好友分享码(最多4个,否则后面的助力失败),原因:京东农场每人每天只有四次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
-let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
+let shareCodes =
+ [ // 这个列表填入你要助力的好友的shareCode
    //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '592ab793f1ed423eba38a71c8a70e27b@8da42306e5034e54869fe082610e5c96@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
+  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@8c7859f6aa5b4460979b0783e7352df5@001d7fff22ab412abfa13cbb31a85783@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713',
   //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '0af863521d704b2e9360e0480b119e19@8da42306e5034e54869fe082610e5c96@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
-  //账号三的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '0af863521d704b2e9360e0480b119e19@592ab793f1ed423eba38a71c8a70e27b@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',
-  //账号四的好友shareCode,不同好友的shareCode中间用@符号隔开
-  '0af863521d704b2e9360e0480b119e19@592ab793f1ed423eba38a71c8a70e27b@c4669483d15b4ab284d2c5154b727db0@353bc67330fe4996bc735a6e5dfdf413',	
-]
+  '5d419f12f9ae473083c76e1f3a34c3e1@567fd3bbeeb6456591bd691f8da17e18@8c7859f6aa5b4460979b0783e7352df5@001d7fff22ab412abfa13cbb31a85783@8ad506fff12a455982fcc9c6d319e5dd@4af26ed40f5a4a2585eefaf7ae8b1713'
+ ]
 let message = '', subTitle = '', option = {}, isFruitFinished = false;
 const retainWater = 100;//保留水滴大于多少g,默认100g;
 let jdNotify = false;//是否关闭通知，false打开通知推送，true关闭通知推送
 let jdFruitBeanCard = false;//农场使用水滴换豆卡(如果出现限时活动时100g水换20豆,此时比浇水划算,推荐换豆),true表示换豆(不浇水),false表示不换豆(继续浇水),脚本默认是浇水
-let randomCount = $.isNode() ? 20 : 5; // let randomCount = 0; 设置从别接口获取互助码个数
+let randomCount = $.isNode() ? 0 : 0;
 const JD_API_HOST = 'https://api.m.jd.com/client.action';
 const urlSchema = `openjd://virtual?params=%7B%20%22category%22:%20%22jump%22,%20%22des%22:%20%22m%22,%20%22url%22:%20%22https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html%22%20%7D`;
 !(async () => {
@@ -89,7 +86,7 @@ async function jdFruit() {
     // option['media-url'] = $.farmInfo.farmUserPro.goodsImage;
     subTitle = `【京东账号${$.index}】${$.nickName}`;
     message = `【水果名称】${$.farmInfo.farmUserPro.name}\n`;
-    console.log(`\n【您的互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
+    console.log(`\n【您的${$.name}互助码shareCode】 ${$.farmInfo.farmUserPro.shareCode}\n`);
     console.log(`\n【已成功兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`);
     message += `【已兑换水果】${$.farmInfo.farmUserPro.winTimes}次\n`;
     await masterHelpShare();//助力好友
@@ -729,6 +726,14 @@ async function clockInIn() {
         }
       }
     }
+    if ($.clockInInit.todaySigned && $.clockInInit.totalSigned === 7) {
+      console.log('开始领取--惊喜礼包38g水滴');
+      await gotClockInGift();
+      if ($.gotClockInGiftRes.code === '0') {
+        // message += `【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`;
+        console.log(`【惊喜礼包】获得${$.gotClockInGiftRes.amount}g💧\n`);
+      }
+    }
     // 限时关注得水滴
     if ($.clockInInit.themes && $.clockInInit.themes.length > 0) {
       for (let item of $.clockInInit.themes) {
@@ -1244,8 +1249,8 @@ function readShareCode() {
         resolve(data);
       }
     })
-       await $.wait(10000);
-       resolve()
+    await $.wait(10000);
+    resolve()
   })
 }
 function shareCodesFormat() {

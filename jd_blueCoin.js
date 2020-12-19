@@ -1,7 +1,7 @@
 /*
 京小超兑换奖品 脚本地址：https://raw.githubusercontent.com/lxk0301/jd_scripts/master/jd_blueCoin.js
 感谢@yangtingxiao提供PR
-更新时间：2020-11-23
+更新时间：2020-12-15
 支持京东多个账号
 脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
 ======================quantumultx===============
@@ -28,12 +28,12 @@ if ($.isNode()) {
   })
   if (process.env.JD_DEBUG && process.env.JD_DEBUG === 'false') console.log = () => {};
 } else {
-   let cookiesData = $.getdata('CookiesJD') || "[]";
-   cookiesData = jsonParse(cookiesData);
-   cookiesArr = cookiesData.map(item => item.cookie);
-	 cookiesArr.reverse();
-   cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
-   cookiesArr.reverse();
+  let cookiesData = $.getdata('CookiesJD') || "[]";
+  cookiesData = jsonParse(cookiesData);
+  cookiesArr = cookiesData.map(item => item.cookie);
+  cookiesArr.reverse();
+  cookiesArr.push(...[$.getdata('CookieJD2'), $.getdata('CookieJD')]);
+  cookiesArr.reverse();
 }
 
 const JD_API_HOST = `https://api.m.jd.com/api?appid=jdsupermarket`;
@@ -337,24 +337,27 @@ function smtgHome() {
 }
 
 //通知
-async function msgShow() {
+function msgShow() {
   // $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n【收取蓝币】${$.coincount ? `${$.coincount}个` : $.coinerr }${coinToBeans ? `\n【兑换京豆】${ $.beanscount ? `${$.beanscount}个` : $.beanerr}` : ""}`);
-  $.log(`\n【京东账号${$.index}】${$.nickName}\n${coinToBeans ? `【兑换${$.title}】${$.beanscount ? `成功` : $.beanerr}` : "您设置的是不兑换奖品"}\n`);
-  let ctrTemp;
-  if ($.isNode() && process.env.MARKET_REWARD_NOTIFY) {
-    ctrTemp = `${process.env.MARKET_REWARD_NOTIFY}` === 'false';
-  } else if ($.getdata('jdSuperMarketRewardNotify')) {
-    ctrTemp = $.getdata('jdSuperMarketRewardNotify') === 'false';
-  } else {
-    ctrTemp = `${jdNotify}` === 'false';
-  }
-  //默认只在兑换奖品成功后弹窗提醒。情况情况加，只打印日志，不弹窗
-  if ($.beanscount && ctrTemp) {
-    $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n${coinToBeans ? `【兑换${$.title}】${ $.beanscount ? `成功，数量：${$.beanscount}个` : $.beanerr}` : "您设置的是不兑换奖品"}`);
-    if ($.isNode()) {
-      await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.UserName}\n${coinToBeans ? `【兑换${$.title}】${$.beanscount ? `成功，数量：${$.beanscount}个` : $.beanerr}` : "您设置的是不兑换奖品"}`)
+  return new Promise(async resolve => {
+    $.log(`\n【京东账号${$.index}】${$.nickName}\n${coinToBeans ? `【兑换${$.title}】${$.beanscount ? `成功` : $.beanerr}` : "您设置的是不兑换奖品"}\n`);
+    let ctrTemp;
+    if ($.isNode() && process.env.MARKET_REWARD_NOTIFY) {
+      ctrTemp = `${process.env.MARKET_REWARD_NOTIFY}` === 'false';
+    } else if ($.getdata('jdSuperMarketRewardNotify')) {
+      ctrTemp = $.getdata('jdSuperMarketRewardNotify') === 'false';
+    } else {
+      ctrTemp = `${jdNotify}` === 'false';
     }
-  }
+    //默认只在兑换奖品成功后弹窗提醒。情况情况加，只打印日志，不弹窗
+    if ($.beanscount && ctrTemp) {
+      $.msg($.name, ``, `【京东账号${$.index}】${$.nickName}\n${coinToBeans ? `【兑换${$.title}】${ $.beanscount ? `成功，数量：${$.beanscount}个` : $.beanerr}` : "您设置的是不兑换奖品"}`);
+      if ($.isNode()) {
+        await notify.sendNotify(`${$.name} - 账号${$.index} - ${$.nickName}`, `【京东账号${$.index}】${$.UserName}\n${coinToBeans ? `【兑换${$.title}】${$.beanscount ? `成功，数量：${$.beanscount}个` : $.beanerr}` : "您设置的是不兑换奖品"}`)
+      }
+    }
+    resolve()
+  })
 }
 function TotalBean() {
   return new Promise(async resolve => {
@@ -368,7 +371,7 @@ function TotalBean() {
         "Connection": "keep-alive",
         "Cookie": cookie,
         "Referer": "https://wqs.jd.com/my/jingdou/my.shtml?sceneval=2",
-        "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_0_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
+        "User-Agent": $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0")
       }
     }
     $.post(options, (err, resp, data) => {
@@ -411,7 +414,7 @@ function taskUrl(function_id, body = {}) {
   return {
     url: `${JD_API_HOST}&functionId=${function_id}&clientVersion=8.0.0&client=m&body=${escape(JSON.stringify(body))}&t=${Date.now()}`,
     headers: {
-      'User-Agent': 'jdapp;iPhone;9.0.8;13.6;Mozilla/5.0 (iPhone; CPU iPhone OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1',
+      'User-Agent': $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;9.2.2;14.2;%E4%BA%AC%E4%B8%9C/9.2.2 CFNetwork/1206 Darwin/20.1.0"),
       'Host': 'api.m.jd.com',
       'Cookie': cookie,
       'Referer': 'https://jdsupermarket.jd.com/game',
@@ -425,7 +428,7 @@ function jsonParse(str) {
       return JSON.parse(str);
     } catch (e) {
       console.log(e);
-      $.msg($.name, '', '不要在BoxJS手动复制粘贴修改cookie')
+      $.msg($.name, '', '请勿随意在BoxJs输入框修改内容\n建议通过脚本去获取cookie')
       return [];
     }
   }
