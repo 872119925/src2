@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: kinsonyan/jd_scripts_backup
+          repository: danwangshimoluo/JdScripts
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -35,7 +35,7 @@ jobs:
       - name: npm install
         run: |
           npm install
-      - name: '运行 【东东超市】'
+      - name: '运行 【京小超】'
         run: |
           node jd_superMarket.js
         env:

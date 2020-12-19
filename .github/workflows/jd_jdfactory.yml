@@ -6,7 +6,7 @@ name: jd_jdfactory
 on:
   workflow_dispatch:
   schedule:
-    - cron: '10 * * * *'
+    - cron: '10 */1 * * *'
   watch:
     types: started
   repository_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
         with:
-          repository: kinsonyan/jd_scripts_backup
+          repository: danwangshimoluo/JdScripts
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
@@ -49,4 +49,5 @@ jobs:
           DD_BOT_TOKEN: ${{ secrets.DD_BOT_TOKEN }}
           DD_BOT_SECRET: ${{ secrets.DD_BOT_SECRET }}
           IGOT_PUSH_KEY: ${{ secrets.IGOT_PUSH_KEY }}
+          DDFACTORY_SHARECODES: ${{ secrets.DDFACTORY_SHARECODES }}
           FACTORAY_WANTPRODUCT_NAME: ${{ secrets.FACTORAY_WANTPRODUCT_NAME }}
